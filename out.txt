@@ -1,0 +1,9 @@
+You are now connected to database "nc_news_test" as user "vboxuser".
+DROP TABLE
+DROP TABLE
+DROP TABLE
+DROP TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
