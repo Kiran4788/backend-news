@@ -2,7 +2,7 @@ const db = require("../connection")
 const { topicData, userData, articleData, commentData } = require("../data/test-data/index.js")
 const format = require("pg-format")
 
-const { convertTimestampToDate } = require("./utils.js")
+const { convertTimestampToDate , createRefObject} = require("./utils.js")
 
 const seed = ({ topicData, userData, articleData, commentData }) => {
   return db.query("DROP TABLE IF EXISTS comments;").
@@ -40,20 +40,23 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
   ).then(()=>{
     //insert data into articles table using pg-format
     const formattedData = articleData.map((article) => {
-      const createdTimeStamp = convertTimestampToDate(article.created_at, article);
-      console.log(createdTimeStamp.created_at+"----->createdTimeStamp");
-      return [article.title, article.topic, article.author, article.body, createdTimeStamp.created_at, article.votes, article.article_img_url];
+      const newArticle = convertTimestampToDate(article);
+      console.log(newArticle+"----->newArticle");     
+      return [newArticle.title, newArticle.topic, newArticle.author, newArticle.body, newArticle.created_at, newArticle.votes, newArticle.article_img_url];
     });
-    const query = format(`INSERT INTO articles(title, topic, author, body, created_at, votes, article_img_url) VALUES %L`,formattedData);
+    const query = format(`INSERT INTO articles(title, topic, author, body, created_at, votes, article_img_url) VALUES %L RETURNING *`,formattedData);
     console.log(query+"----->query");
     return db.query(query);
-  }).then(()=>{
+  }).then((result)=>{
     //insert data into comments table using pg-format
+      const articleRefObject = createRefObject(result.rows);       
       const formattedData = commentData.map((comment) => {
-      const createdTimeStamp = convertTimestampToDate(comment.created_at, comment);
-      return [comment.body, comment.article_id, comment.votes, comment.author, createdTimeStamp.created_at];
+        const newComment = convertTimestampToDate(comment);  
+        return [newComment.body, articleRefObject[newComment.article_title], newComment.votes, newComment.author, newComment.created_at];
     });
+    console.log(formattedData+"----->formattedData Comments");
     const query = format(`INSERT INTO comments(body, article_id, votes, author, created_at) VALUES %L`,formattedData);
+    console.log(query+"----->query");
     return db.query(query);
   })
   .then(()=>{
