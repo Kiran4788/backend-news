@@ -8,6 +8,7 @@ const {
   handleInvalidPath,
 } = require("./errorHandler");
 const { getTopics } = require("./app/controllers/topics.controller");
+const { getArticleById } = require("./app/controllers/articles.controller");
 
 app.use(express.json());
 
@@ -18,6 +19,9 @@ app.get("/api", getApiEndPoints);
 //GET /api/topics would get an array of topic objects , each of which should have
 // slug and description properties
 app.get("/api/topics", getTopics);
+
+// GET /api/articles/:article_id
+app.get("/api/articles/:article_id", getArticleById);
 
 app.all("/*splat", handleInvalidPath);
 //error handling middleware
