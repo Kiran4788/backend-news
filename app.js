@@ -8,7 +8,10 @@ const {
   handleInvalidPath,
 } = require("./errorHandler");
 const { getTopics } = require("./app/controllers/topics.controller");
-const { getArticleById } = require("./app/controllers/articles.controller");
+const {
+  getArticleById,
+  getAllArticles,
+} = require("./app/controllers/articles.controller");
 
 app.use(express.json());
 
@@ -22,6 +25,10 @@ app.get("/api/topics", getTopics);
 
 // GET /api/articles/:article_id
 app.get("/api/articles/:article_id", getArticleById);
+
+//GET /api/articles get an articles array with comment_count , sorted by date
+// in descening order with no body property
+app.get("/api/articles", getAllArticles);
 
 app.all("/*splat", handleInvalidPath);
 //error handling middleware
