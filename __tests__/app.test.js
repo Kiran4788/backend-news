@@ -420,3 +420,76 @@ describe("GET /api/users", () => {
       });
   });
 });
+
+//GET /api/articles sort_by query (takes any valid column) and order query
+// (takes asc or desc)
+describe("GET /api/articles?sort_by=column&order=asc|desc", () => {
+  test("200: Responds with an array of articles sorted by the specified column in ascending order", () => {
+    return request(app)
+      .get("/api/articles?sort_by=title&order=asc")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles.length).toBeGreaterThan(0);
+        expect(articles).toBeSortedBy("title");
+        expect(articles).toBeInstanceOf(Array);
+      });
+  });
+  test("200: Responds with an array of articles sorted by the specified column in descending order", () => {
+    return request(app)
+      .get("/api/articles?sort_by=title&order=desc")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles.length).toBeGreaterThan(0);
+        expect(articles).toBeSortedBy("title", {
+          descending: true,
+        });
+      });
+  });
+  test("200: Responds with an array of articles sorted by the article_id in default order", () => {
+    return request(app)
+      .get("/api/articles?sort_by=ARTICLE_ID")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles.length).toBeGreaterThan(0);
+        expect(articles).toBeSortedBy("article_id", {
+          descending: true,
+        });
+        expect(articles).toBeInstanceOf(Array);
+      });
+  });
+  test("200: Responds with an array of articles ordered in ascending order with default order by clause , created_at", () => {
+    return request(app)
+      .get("/api/articles?order=ASC")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles.length).toBeGreaterThan(0);
+        expect(articles).toBeSortedBy("created_at");
+      });
+  });
+  test("400: Responds with an error message when given an invalid sort_by column", () => {
+    return request(app)
+      .get("/api/articles?sort_by=invalid_column&order=asc")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid sort query");
+      });
+  });
+  test("400: Responds with an error message when given an invalid order value", () => {
+    return request(app)
+      .get("/api/articles?sort_by=title&order=invalid_order")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid order query");
+      });
+  });
+  test("200: Responds with an array of articles sorted by the default column (created_at) in descending order when no query parameters are provided", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
+  });
+});
