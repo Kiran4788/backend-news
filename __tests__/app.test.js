@@ -366,3 +366,36 @@ describe("PATCH /api/articles/:article_id", () => {
       });
   });
 });
+
+//DELETE /api/comments/:comment_id , should respond with status 204 and no content
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204: Responds with no content when given a valid comment_id", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then(() => {
+        // Check that the comment has been deleted from the database
+        db.query("SELECT * FROM comments WHERE comment_id = 1").then(
+          (result) => {
+            expect(result.rows.length).toBe(0);
+          }
+        );
+      });
+  });
+  test("400: Responds with an error message when given an invalid comment_id", () => {
+    return request(app)
+      .delete("/api/comments/invalid_id")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request");
+      });
+  });
+  test("404: Responds with an error message when given a valid comment_id that does not exist", () => {
+    return request(app)
+      .delete("/api/comments/99999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Comment Not Found");
+      });
+  });
+});

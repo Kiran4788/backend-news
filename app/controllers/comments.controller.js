@@ -1,6 +1,8 @@
 const {
   selectCommentsByArticleId,
   insertCommentForArticle,
+  selectCommentById,
+  deleteCommentById,
 } = require("../models/comments.model");
 const { selectArticleById } = require("../models/articles.model");
 const { selectUserByUsername } = require("../models/users.model");
@@ -51,6 +53,24 @@ exports.postCommentByArticleId = (req, res, next) => {
     })
     .then((newComment) => {
       res.status(201).send({ comment: newComment });
+    })
+    .catch(next);
+};
+
+exports.deleteCommentById = (req, res, next) => {
+  const { comment_id } = req.params;
+
+  // Check if the comment exists
+  selectCommentById(comment_id)
+    .then((comment) => {
+      if (!comment) {
+        return Promise.reject({ status: 404, msg: "Comment Not Found" });
+      }
+      // Delete the comment from the database
+      return deleteCommentById(comment_id);
+    })
+    .then(() => {
+      res.status(204).send();
     })
     .catch(next);
 };

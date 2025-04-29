@@ -16,6 +16,7 @@ const {
 const {
   getCommentsByArticleId,
   postCommentByArticleId,
+  deleteCommentById,
 } = require("./app/controllers/comments.controller");
 
 app.use(express.json());
@@ -46,6 +47,9 @@ app.post("/api/articles/:article_id/comments", postCommentByArticleId);
 //patch /api/articles/:article_id , body accepts an object with inc_votes property
 // which is a number
 app.patch("/api/articles/:article_id", updateArticleById);
+
+//DELETE /api/comments/:comment_id , should respond with status 204 and no content
+app.delete("/api/comments/:comment_id", deleteCommentById);
 
 app.all("/*splat", handleInvalidPath);
 //error handling middleware
