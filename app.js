@@ -14,9 +14,10 @@ const {
 } = require("./app/controllers/articles.controller");
 const {
   getCommentsByArticleId,
+  postCommentByArticleId,
 } = require("./app/controllers/comments.controller");
 
-//app.use(express.json());
+app.use(express.json());
 
 //create GET/api which will act as documentation detailing all end points
 // mentioned in endpoints.json
@@ -36,6 +37,10 @@ app.get("/api/articles", getAllArticles);
 //GET /api/articles/:article_id/comments get an array of comments for
 // the given article_id sorted by most recent first
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
+
+//POST /api/articles/:article_id/comments , should respond with the posted comment
+// should take in a comment object with username and body properties
+app.post("/api/articles/:article_id/comments", postCommentByArticleId);
 
 app.all("/*splat", handleInvalidPath);
 //error handling middleware
