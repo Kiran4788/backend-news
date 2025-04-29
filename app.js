@@ -11,6 +11,7 @@ const { getTopics } = require("./app/controllers/topics.controller");
 const {
   getArticleById,
   getAllArticles,
+  updateArticleById,
 } = require("./app/controllers/articles.controller");
 const {
   getCommentsByArticleId,
@@ -41,6 +42,10 @@ app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 //POST /api/articles/:article_id/comments , should respond with the posted comment
 // should take in a comment object with username and body properties
 app.post("/api/articles/:article_id/comments", postCommentByArticleId);
+
+//patch /api/articles/:article_id , body accepts an object with inc_votes property
+// which is a number
+app.patch("/api/articles/:article_id", updateArticleById);
 
 app.all("/*splat", handleInvalidPath);
 //error handling middleware
