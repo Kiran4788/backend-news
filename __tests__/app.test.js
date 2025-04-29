@@ -91,3 +91,34 @@ describe("GET /api/articles/:article_id", () => {
       });
   });
 });
+
+//GET /api/articles get an articles array with comment_count , sorted by date
+// in descening order with no body property
+describe("GET /api/articles", () => {
+  test("200: Responds with an array of article objects, each with comment_count property", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        console.log(articles);
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles.length).toBe(13);
+        expect(articles).toBeSortedBy("created_at", {
+          descending: true,
+        });
+        articles.forEach((article) => {
+          expect(article).not.toHaveProperty("body");
+          expect(article).toMatchObject({
+            article_id: expect.any(Number),
+            title: expect.any(String),
+            votes: expect.any(Number),
+            topic: expect.any(String),
+            author: expect.any(String),
+            created_at: expect.any(String),
+            article_img_url: expect.any(String),
+            comment_count: expect.any(Number),
+          });
+        });
+      });
+  });
+});
