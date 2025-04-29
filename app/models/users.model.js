@@ -11,3 +11,9 @@ exports.selectUserByUsername = (username) => {
       return result.rows[0];
     });
 };
+
+exports.selectAllUsers = () => {
+  return db.query(`SELECT * FROM users`).then((result) => {
+    return result.rows;
+  });
+};

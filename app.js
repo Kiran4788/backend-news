@@ -18,6 +18,7 @@ const {
   postCommentByArticleId,
   deleteCommentById,
 } = require("./app/controllers/comments.controller");
+const { getAllUsers } = require("./app/controllers/users.controller");
 
 app.use(express.json());
 
@@ -50,6 +51,9 @@ app.patch("/api/articles/:article_id", updateArticleById);
 
 //DELETE /api/comments/:comment_id , should respond with status 204 and no content
 app.delete("/api/comments/:comment_id", deleteCommentById);
+
+//GET /api/users , should respond with an array of user objects
+app.get("/api/users", getAllUsers);
 
 app.all("/*splat", handleInvalidPath);
 //error handling middleware
