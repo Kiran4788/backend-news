@@ -3,6 +3,7 @@ const {
   selectAllArticles,
   updateArticleVotes,
 } = require("../models/articles.model");
+const { selectTopicBySlug } = require("../models/topics.model");
 
 exports.getArticleById = (req, res, next) => {
   const { article_id } = req.params;
@@ -20,12 +21,28 @@ exports.getArticleById = (req, res, next) => {
 };
 
 exports.getAllArticles = (req, res, next) => {
-  const { sort_by, order } = req.query;
-  selectAllArticles(sort_by, order)
-    .then((articles) => {
-      res.status(200).send({ articles });
-    })
-    .catch(next);
+  const { sort_by, order, topic } = req.query;
+  //promise to check if topic exists
+  if (topic) {
+    return selectTopicBySlug(topic)
+      .then((topic) => {
+        if (!topic) {
+          return Promise.reject({ status: 404, msg: "Topic Not Found" });
+        }
+        return topic;
+      }).then((topic) => {
+        return selectAllArticles(sort_by, order, topic.slug);
+      }).then((articles) => {
+        res.status(200).send({ articles });
+      })
+      .catch(next);
+  } else {
+    selectAllArticles(sort_by, order, null)
+      .then((articles) => {
+        res.status(200).send({ articles });
+      })
+      .catch(next);
+  }
 };
 
 exports.updateArticleById = (req, res, next) => {

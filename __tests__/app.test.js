@@ -13,7 +13,7 @@ afterAll(() => db.end());
 // Close the database connection after all tests are done
 
 describe("GET /api", () => {
-  test("200: Responds with an object detailing the documentation for each endpoint", () => {
+  test("200: Responds withkiran4788 an object detailing the documentation for each endpoint", () => {
     return request(app)
       .get("/api")
       .expect(200)
@@ -490,6 +490,56 @@ describe("GET /api/articles?sort_by=column&order=asc|desc", () => {
         expect(articles).toBeSortedBy("created_at", {
           descending: true,
         });
+      });
+  });
+});
+
+//GET /api/articles (topic query)  
+// should respond with an array of articles filtered by the specified topic
+describe("GET /api/articles?topic=topic_slug", () => {
+  test("200: Responds with an array of articles filtered by the specified topic", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles.length).toBeGreaterThan(0);
+        expect(articles).toBeSortedBy("created_at", {
+          descending: true,
+        });
+        articles.forEach((article) => {
+          expect(article.topic).toBe("mitch");
+        });
+      });
+  });
+  test("200: Responds with an array of articles with topic, sort_by and order query params",()=>{
+    return request(app)
+      .get("/api/articles?topic=mitch&sort_by=title&order=asc")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles.length).toBeGreaterThan(0);
+        expect(articles).toBeSortedBy("title");
+        articles.forEach((article) => {
+          expect(article.topic).toBe("mitch");
+        });
+      });
+  });
+  test("200: Responds with an empty array when there are no articles for the specified topic", () => {
+    return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles.length).toBe(0);
+      });
+  });
+  test("404: Responds with a 404 error message when given an invalid topic slug", () => {
+    return request(app)
+      .get("/api/articles?topic=invalid_topic")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Topic Not Found");
       });
   });
 });

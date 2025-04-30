@@ -12,7 +12,7 @@ exports.selectArticleById = (article_id) => {
     });
 };
 
-exports.selectAllArticles = (sort_by, order) => {
+exports.selectAllArticles = (sort_by, order, topic) => {
   const validSortBy = [
     "article_id",
     "title",
@@ -29,8 +29,9 @@ exports.selectAllArticles = (sort_by, order) => {
     return Promise.reject({ status: 400, msg: "Invalid order query" });
   }
   const orderBy = sort_by ? ` ORDER BY ${sort_by} ` : ` ORDER BY created_at `;
-  const orderDirection = order ? order : " DESC";
-  const orderClause = ` ${orderDirection}`;
+  const orderDirection = order ? order : " DESC";  
+  const topicQuery = topic ? ` WHERE a.topic = '${topic}' ` : "";
+
   const query = `SELECT a.author, 
          a.title, 
          a.article_id, 
@@ -41,9 +42,10 @@ exports.selectAllArticles = (sort_by, order) => {
          COUNT(c.article_id)::INT AS comment_count
          FROM articles AS a 
          LEFT JOIN comments AS c ON a.article_id = c.article_id
-         GROUP BY 1,2,3,4,5,6,7
-         ${orderBy}${orderClause}`;
-  return db.query(query).then((result) => {
+         ${topicQuery}
+         GROUP BY 1,2,3,4,5,6,7        
+         ${orderBy}${orderDirection}`;  
+  return db.query(query).then((result) => {   
     return result.rows;
   });
 };

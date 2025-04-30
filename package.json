@@ -6,7 +6,7 @@
   "scripts": {
     "setup-dbs": "psql -f ./db/setup-dbs.sql",
     "seed-dev": "node ./db/seeds/run-seed.js",
-    "test": "jest",
+    "test": "jest --detectOpenHandles --runInBand --forceExit",
     "prepare": "husky install",
     "start": "node listen.js",
     "test-seed": "jest seed.test.js"
@@ -32,7 +32,7 @@
   "dependencies": {
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
-    "pg": "^8.14.1",
+    "pg": "^8.15.6",
     "pg-format": "^1.0.4"
   },
   "jest": {
