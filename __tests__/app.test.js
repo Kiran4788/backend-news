@@ -53,13 +53,13 @@ describe("GET /api/topics", () => {
   });
 });
 
-// GET /api/articles/:article_id
+// GET /api/articles/:article_id , should also include comment_count
 describe("GET /api/articles/:article_id", () => {
   test("200: Responds with the article object with the specified article_id", () => {
     return request(app)
       .get("/api/articles/1")
       .expect(200)
-      .then(({ body: { article } }) => {
+      .then(({ body: { article } }) => {        
         expect(article).toMatchObject({
           article_id: 1,
           title: expect.any(String),
@@ -69,6 +69,7 @@ describe("GET /api/articles/:article_id", () => {
           author: expect.any(String),
           created_at: expect.any(String),
           article_img_url: expect.any(String),
+          comment_count: 11,
         });
       });
   });
@@ -512,7 +513,7 @@ describe("GET /api/articles?topic=topic_slug", () => {
         });
       });
   });
-  test("200: Responds with an array of articles with topic, sort_by and order query params",()=>{
+  test("200: Responds with an array of articles with topic, sort_by and order query params", () => {
     return request(app)
       .get("/api/articles?topic=mitch&sort_by=title&order=asc")
       .expect(200)
@@ -543,3 +544,5 @@ describe("GET /api/articles?topic=topic_slug", () => {
       });
   });
 });
+
+
