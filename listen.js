@@ -1,9 +1,11 @@
 const app = require("./app");
 
-app.listen(3000, (err) => {
+const {PORT = 9090} = process.env
+
+app.listen(PORT, (err) => {
   if (err) {
     console.error("Error starting server:", err);
     return;
   }
-  console.log("Server is running on port 3000");
+  console.log(`Server is running on port ${PORT}`);
 });
