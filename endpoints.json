@@ -6,11 +6,33 @@
     "description": "serves an array of all topics",
     "queries": [],
     "exampleResponse": {
-      "topics": [{ "slug": "football", "description": "Footie!" }]
+      "topics": [
+        {
+          "slug": "football",
+          "description": "Footie!"
+        }
+      ]
     }
   },
   "GET /api/articles": {
     "description": "serves an array of all articles",
+    "queries": [
+      {
+        "key": "sort_by",
+        "description": "the field to sort the comments by",
+        "example": "created_at"
+      },
+      {
+        "key": "order",
+        "description": "the order to sort the comments in",
+        "example": "asc or desc"
+      },
+      {
+        "key": "topic",
+        "description": "the topic to filter the comments by",
+        "example": "cooking"
+      }
+    ],
     "exampleResponse": {
       "articles": [
         {
@@ -20,6 +42,85 @@
           "created_at": "2018-05-30T15:59:13.341Z",
           "votes": 0,
           "comment_count": 6
+        }
+      ]
+    }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "serves the article matching with the article_id in the path",
+    "exampleResponse": {
+      "article": {
+        "title": "Seafood substitutions are increasing",
+        "topic": "cooking",
+        "author": "weegembump",
+        "created_at": "2018-05-30T15:59:13.341Z",
+        "votes": 0,
+        "comment_count": 6
+      }
+    }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "serves a list of comments for the article with the given article_id",
+    "exampleResponse": {
+      "comments": [
+        {
+          "comment_id": 1,
+          "body": "I love curry",
+          "votes": 16,
+          "created_at": "2016-11-22T12:36:03.389Z",
+          "author": "weegembump"
+        }
+      ]
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "posts a comment to the article with the given article_id",
+    "body": {
+      "username": "weegembump",
+      "body": "I love curry"
+    },
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 1,
+        "body": "I love curry",
+        "votes": 16,
+        "created_at": "2016-11-22T12:36:03.389Z",
+        "author": "weegembump"
+      }
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "updates the votes of the article with the given article_id",
+    "body": {
+      "inc_votes": 1
+    },
+    "exampleResponse": {
+      "article": {
+        "title": "Seafood substitutions are increasing",
+        "topic": "cooking",
+        "author": "weegembump",
+        "created_at": "2018-05-30T15:59:13.341Z",
+        "votes": 1,
+        "body": "I love curry",
+        "article_id": 1      
+      }
+    }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes the comment with the given comment_id",
+    "exampleResponse": {
+      "status": 204,
+      "message": "No Content"
+    }
+  },
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "weegembump",
+          "avatar_url": "https://www.healthyfood.com/wp-content/uploads/2020/01/seafood-substitutions.jpg",
+          "name": "Tommy"
         }
       ]
     }
