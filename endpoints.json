@@ -19,17 +19,17 @@
     "queries": [
       {
         "key": "sort_by",
-        "description": "the field to sort the comments by",
+        "description": "the field to sort the articles by",
         "example": "created_at"
       },
       {
         "key": "order",
-        "description": "the order to sort the comments in",
+        "description": "the order to sort the articles by",
         "example": "asc or desc"
       },
       {
         "key": "topic",
-        "description": "the topic to filter the comments by",
+        "description": "the topic to filter the articles by",
         "example": "cooking"
       }
     ],
