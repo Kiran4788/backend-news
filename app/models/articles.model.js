@@ -32,6 +32,7 @@ exports.selectAllArticles = (sort_by, order, topic) => {
     "author",
     "created_at",
     "votes",
+    "comment_count"
   ];
   const validOrder = ["asc", "desc"];
   if (sort_by && !validSortBy.includes(sort_by.toLowerCase())) {
